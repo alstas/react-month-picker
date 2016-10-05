@@ -300,3 +300,6 @@
   color: #717171;
   cursor: default;
 }
+.month-picker .btn.disable {
+  visibility: hidden;
+}

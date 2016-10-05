@@ -400,7 +400,7 @@
 	    value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	var _react = __webpack_require__(1);
 
@@ -463,6 +463,7 @@
 	        range: _react2.default.PropTypes.object,
 	        lang: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.array, _react2.default.PropTypes.object]),
 	        onChange: _react2.default.PropTypes.func,
+	        onYearChange: _react2.default.PropTypes.func,
 	        onShow: _react2.default.PropTypes.func,
 	        onDismiss: _react2.default.PropTypes.func,
 	        onClickAway: _react2.default.PropTypes.func,
@@ -552,6 +553,7 @@
 
 	        var values = this.state.values,
 	            value = values[padIndex],
+	            yearIndex = this.state.yearIndexes[padIndex],
 	            labelYears = this.state.labelYears,
 	            labelYear = labelYears[padIndex] = labelYears[padIndex] || value.year,
 	            years = this.state.years,
@@ -559,16 +561,10 @@
 	            months = Array.isArray(lang) ? lang : Array.isArray(lang.months) ? lang.months : [],
 	            prevCss = '',
 	            nextCss = '',
-	            yearMaxIdx = years.length - 1,
-	            yearIdx = yearMaxIdx;
-	        for (var i = 0; i < years.length; i++) {
-	            if (value.year === years[i]) {
-	                yearIdx = i;
-	                break;
-	            }
-	        }
-	        if (yearIdx === 0) prevCss = 'disable';
-	        if (yearIdx === yearMaxIdx) nextCss = 'disable';
+	            yearMaxIdx = years.length - 1;
+
+	        if (yearIndex === 0) prevCss = 'disable';
+	        if (yearMaxIdx === yearIndex) nextCss = 'disable';
 
 	        var yearActive = labelYear === value.year,
 	            otherValue = false;
@@ -680,10 +676,10 @@
 	    show: function show() {
 	        this._onShow();
 	    },
-	    _handleOverlayTouchTap: function _handleOverlayTouchTap() {
+	    _handleOverlayTouchTap: function _handleOverlayTouchTap(e) {
 	        if (this.closeable) {
 	            this._onDismiss();
-	            this.props.onClickAway && this.props.onClickAway();
+	            this.props.onClickAway && this.props.onClickAway(e);
 	        }
 	    },
 	    _onShow: function _onShow() {
@@ -728,6 +724,7 @@
 	        this.setState({
 	            labelYears: labelYears
 	        });
+	        this.props.onYearChange && this.props.onYearChange();
 	    },
 	    getDID: function getDID(e) {
 	        var el = e.target;
