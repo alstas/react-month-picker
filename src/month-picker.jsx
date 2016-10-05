@@ -83,6 +83,7 @@ let MonthPicker = React.createClass({
         , range: React.PropTypes.object
         , lang: React.PropTypes.oneOfType([React.PropTypes.array, React.PropTypes.object])
         , onChange: React.PropTypes.func
+        , onYearChange: React.PropTypes.func
         , onShow: React.PropTypes.func
         , onDismiss: React.PropTypes.func
         , onClickAway: React.PropTypes.func
@@ -185,22 +186,18 @@ let MonthPicker = React.createClass({
     , optionPad(padIndex) {
         let values = this.state.values
             , value = values[padIndex]
+            , yearIndex = this.state.yearIndexes[padIndex]
             , labelYears = this.state.labelYears
             , labelYear = labelYears[padIndex] = labelYears[padIndex] || value.year
             , years = this.state.years
             , lang = this.props.lang || []
             , months =  Array.isArray(lang) ? lang : (Array.isArray(lang.months) ? lang.months : [])
             , prevCss = '', nextCss = ''
-            , yearMaxIdx = years.length - 1
-            , yearIdx = yearMaxIdx
-        for (let i = 0; i < years.length; i++) {
-            if (value.year === years[i]) {
-                yearIdx = i
-                break
-            }
-        }
-        if (yearIdx === 0) prevCss = 'disable'
-        if (yearIdx === yearMaxIdx) nextCss = 'disable'
+            , yearMaxIdx = years.length - 1;
+
+
+        if ( yearIndex === 0 ) prevCss = 'disable';
+        if ( yearMaxIdx === yearIndex  ) nextCss = 'disable';
 
         let yearActive = (labelYear === value.year)
             , otherValue = false
@@ -290,10 +287,10 @@ let MonthPicker = React.createClass({
         this._onShow()
     }
 
-    ,  _handleOverlayTouchTap() {
+    ,  _handleOverlayTouchTap(e) {
         if (this.closeable) {
             this._onDismiss()
-            this.props.onClickAway && this.props.onClickAway()
+            this.props.onClickAway && this.props.onClickAway(e)
         }
     }
 
@@ -340,6 +337,7 @@ let MonthPicker = React.createClass({
         this.setState({
             labelYears: labelYears
         })
+        this.props.onYearChange && this.props.onYearChange();
     }
 
     , getDID(e) {
